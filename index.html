@@ -110,7 +110,6 @@ z-index:1;
 /* 🎉 CONFETTI */
 #confettiBox{
 margin-top:15px;
-position:relative;
 display:flex;
 flex-direction:column;
 align-items:center;
@@ -120,19 +119,12 @@ align-items:center;
 width:120px;
 cursor:pointer;
 filter:drop-shadow(0 0 10px rgba(255,255,255,0.5));
+transition:0.15s;
 }
 
-#confettiBtn{
-position:absolute;
-top:50%;
-left:50%;
-transform:translate(-50%,-50%);
-background:rgba(0,0,0,0.6);
-color:white;
-padding:6px 12px;
-border-radius:10px;
-font-size:12px;
-cursor:pointer;
+/* 💥 BASINCA KÜÇÜLME */
+#confettiImg:active{
+transform:scale(0.95);
 }
 
 #loveText{
@@ -176,10 +168,9 @@ pointer-events:none;
 
   <img id="photo" src="image.jpg">
 
-  <!-- 🎉 CONFETTI -->
+  <!-- 🎉 SADECE GÖRSEL -->
   <div id="confettiBox">
     <img id="confettiImg" src="confetti.png" onclick="triggerConfetti(event)">
-    <div id="confettiBtn" onclick="triggerConfetti(event)">TAP 💖</div>
   </div>
 
   <div id="loveText">Seni Seviyorum ❤️</div>
