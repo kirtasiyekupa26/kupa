@@ -107,7 +107,7 @@ border-radius:20px;
 z-index:1;
 }
 
-/* 🎉 CONFETTI ALANI */
+/* 🎉 CONFETTI */
 #confettiBox{
 margin-top:15px;
 position:relative;
@@ -119,6 +119,7 @@ align-items:center;
 #confettiImg{
 width:120px;
 cursor:pointer;
+filter:drop-shadow(0 0 10px rgba(255,255,255,0.5));
 }
 
 #confettiBtn{
@@ -175,9 +176,9 @@ pointer-events:none;
 
   <img id="photo" src="image.jpg">
 
-  <!-- 🎉 EKLENEN CONFETTI -->
+  <!-- 🎉 CONFETTI -->
   <div id="confettiBox">
-    <img id="confettiImg" src="confetti.png">
+    <img id="confettiImg" src="confetti.png" onclick="triggerConfetti(event)">
     <div id="confettiBtn" onclick="triggerConfetti(event)">TAP 💖</div>
   </div>
 
@@ -233,7 +234,7 @@ function showFinal(){
   document.getElementById("loveText").style.opacity="1";
 }
 
-/* 🎉 BUTON TETİK */
+/* 🎉 TETİK */
 function triggerConfetti(e){
   e.stopPropagation();
 
@@ -268,7 +269,7 @@ function createFloatingHearts(){
   animate();
 }
 
-/* 💥 FOTO ÜZERİ PATLAMA */
+/* 💥 PATLAMA */
 function createBurstHearts(){
   let photo = document.getElementById("photo");
   let rect = photo.getBoundingClientRect();
