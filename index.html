@@ -13,7 +13,6 @@ overflow:hidden;
 font-family:Arial;
 }
 
-/* SAHNE */
 #stage{
 position:fixed;
 width:100%;
@@ -24,7 +23,6 @@ justify-content:center;
 background:black;
 }
 
-/* START BUTTON */
 #playBtn{
 position:absolute;
 z-index:20;
@@ -47,7 +45,6 @@ border-bottom:20px solid transparent;
 margin-left:6px;
 }
 
-/* PERDE */
 .curtain{
 position:absolute;
 top:0;
@@ -66,7 +63,6 @@ z-index:10;
 .openLeft{transform:translateX(-100%);}
 .openRight{transform:translateX(100%);}
 
-/* COUNTDOWN */
 #countdown{
 position:absolute;
 width:100%;
@@ -81,7 +77,6 @@ height:100%;
 object-fit:cover;
 }
 
-/* FLASH */
 #flash{
 position:fixed;
 width:100%;
@@ -93,7 +88,6 @@ z-index:50;
 pointer-events:none;
 }
 
-/* FINAL */
 #final{
 display:none;
 position:fixed;
@@ -106,7 +100,6 @@ flex-direction:column;
 z-index:5;
 }
 
-/* 🔥 FOTO ALTTA */
 #photo{
 width:80%;
 max-width:420px;
@@ -114,7 +107,6 @@ border-radius:20px;
 z-index:1;
 }
 
-/* YAZI */
 #loveText{
 color:white;
 font-size:28px;
@@ -124,7 +116,6 @@ transition:1.5s;
 z-index:3;
 }
 
-/* 🔥 CANVAS ÜSTTE */
 #heartCanvas{
 position:fixed;
 top:0;
@@ -134,7 +125,6 @@ height:100%;
 z-index:2;
 pointer-events:none;
 }
-
 </style>
 </head>
 
@@ -164,7 +154,6 @@ pointer-events:none;
 <script>
 
 let canvas, ctx;
-let particles = [];
 let floatingHearts = [];
 
 function start(){
@@ -205,8 +194,7 @@ function showFinal(){
   document.getElementById("confetti").play();
 
   initCanvas();
-  createHeartShape();
-  createFloatingHearts();
+  createFloatingHearts(); // sadece bu kaldı
 
   document.getElementById("loveText").style.opacity="1";
 }
@@ -220,36 +208,7 @@ function initCanvas(){
   canvas.height = window.innerHeight;
 }
 
-/* ❤️ NET DOLU KALP */
-function createHeartShape(){
-  let cx = canvas.width/2;
-  let cy = canvas.height/2;
-
-  let scale = 16;
-  let density = 10;
-
-  for(let x=-density; x<=density; x+=0.25){
-    for(let y=-density; y<=density; y+=0.25){
-
-      let nx = x/density;
-      let ny = y/density;
-
-      let eq = Math.pow(nx*nx + ny*ny -1,3) - nx*nx*ny*ny*ny;
-
-      if(eq <= 0){
-        particles.push({
-          x: cx + x*scale,
-          y: cy - y*scale,
-          size: 2
-        });
-      }
-    }
-  }
-
-  animate();
-}
-
-/* 💖 ALTTAN YÜKSELEN */
+/* 💖 SADECE YÜZEN KALPLER */
 function createFloatingHearts(){
   setInterval(()=>{
     floatingHearts.push({
@@ -260,6 +219,8 @@ function createFloatingHearts(){
       alpha: 1
     });
   },200);
+
+  animate();
 }
 
 function drawHeart(x,y,size,alpha){
@@ -282,13 +243,6 @@ function drawHeart(x,y,size,alpha){
 
 function animate(){
   ctx.clearRect(0,0,canvas.width,canvas.height);
-
-  particles.forEach(p=>{
-    ctx.fillStyle="#ff4d6d";
-    ctx.beginPath();
-    ctx.arc(p.x,p.y,p.size,0,Math.PI*2);
-    ctx.fill();
-  });
 
   floatingHearts.forEach(h=>{
     h.y -= h.speed;
