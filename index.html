@@ -24,7 +24,7 @@ justify-content:center;
 background:black;
 }
 
-/* START BUTTON */
+/* PLAY */
 #playBtn{
 position:absolute;
 z-index:20;
@@ -38,13 +38,11 @@ justify-content:center;
 cursor:pointer;
 box-shadow:0 0 30px rgba(0,0,0,0.8);
 }
-
 #playBtn:after{
 content:"";
 border-left:35px solid white;
 border-top:20px solid transparent;
 border-bottom:20px solid transparent;
-margin-left:6px;
 }
 
 /* PERDE */
@@ -55,14 +53,11 @@ width:50%;
 height:100%;
 background-image:url("curtain.jpg");
 background-size:200% 100%;
-background-repeat:no-repeat;
-transition:2.2s ease;
+transition:2.2s;
 z-index:10;
 }
-
-#leftCurtain{left:0;background-position:left center;}
-#rightCurtain{right:0;background-position:right center;}
-
+#leftCurtain{left:0;}
+#rightCurtain{right:0;}
 .openLeft{transform:translateX(-100%);}
 .openRight{transform:translateX(100%);}
 
@@ -72,10 +67,8 @@ position:absolute;
 width:100%;
 height:100%;
 display:none;
-z-index:5;
 }
-
-#countVideo{
+video{
 width:100%;
 height:100%;
 object-fit:cover;
@@ -90,7 +83,6 @@ background:white;
 opacity:0;
 transition:0.3s;
 z-index:50;
-pointer-events:none;
 }
 
 /* FINAL */
@@ -103,13 +95,14 @@ background:black;
 align-items:center;
 justify-content:center;
 flex-direction:column;
-z-index:5;
 }
 
+/* FOTO */
 #photo{
 width:80%;
 max-width:420px;
 border-radius:20px;
+z-index:2;
 }
 
 /* YAZI */
@@ -119,36 +112,18 @@ font-size:28px;
 margin-top:20px;
 opacity:0;
 transition:1.5s;
+z-index:2;
 }
 
-/* GÜL */
-.rose{
-position:absolute;
-width:26px;
-top:100vh;
-transition:1s linear;
-filter: drop-shadow(0 0 6px rgba(255,0,0,0.6));
-}
-
-/* DÖNME */
-.spin{
-animation:spin 2s linear infinite;
-}
-
-@keyframes spin{
-from{transform:rotate(0deg);}
-to{transform:rotate(360deg);}
-}
-
-/* NABIZ */
-.pulse{
-animation:pulse 1s ease-in-out infinite;
-}
-
-@keyframes pulse{
-0%{transform:scale(1);}
-50%{transform:scale(1.15);}
-100%{transform:scale(1);}
+/* CANVAS */
+#heartCanvas{
+position:fixed;
+top:0;
+left:0;
+width:100%;
+height:100%;
+z-index:1;
+pointer-events:none;
 }
 
 </style>
@@ -170,6 +145,7 @@ animation:pulse 1s ease-in-out infinite;
 <div id="flash"></div>
 
 <div id="final">
+  <canvas id="heartCanvas"></canvas>
   <img id="photo" src="image.jpg">
   <div id="loveText">Seni Seviyorum ❤️</div>
 </div>
@@ -178,112 +154,96 @@ animation:pulse 1s ease-in-out infinite;
 
 <script>
 
-let roses=[];
+let canvas, ctx, particles=[];
 
 function start(){
   event.stopPropagation();
   document.getElementById("playBtn").style.display="none";
-
-  document.getElementById("leftCurtain").classList.add("openLeft");
-  document.getElementById("rightCurtain").classList.add("openRight");
-
+  leftCurtain.classList.add("openLeft");
+  rightCurtain.classList.add("openRight");
   setTimeout(playCountdown,2200);
 }
 
 function playCountdown(){
-  let c=document.getElementById("countdown");
   let v=document.getElementById("countVideo");
-
-  c.style.display="block";
+  countdown.style.display="block";
   v.play();
-
   v.onended=flash;
 }
 
 function flash(){
-  let f=document.getElementById("flash");
-
-  f.style.opacity="1";
-
+  flashEl.style.opacity="1";
   setTimeout(()=>{
-    f.style.opacity="0";
+    flashEl.style.opacity="0";
     showFinal();
   },300);
 }
 
 function showFinal(){
-  document.getElementById("stage").style.display="none";
-  document.getElementById("final").style.display="flex";
+  stage.style.display="none";
+  final.style.display="flex";
 
   document.getElementById("confetti").play();
 
-  createRoses();
-}
-
-/* 🌹 GÜLLER */
-function createRoses(){
-  for(let i=0;i<500;i++){
-    let r=document.createElement("img");
-    r.src="rose.png";
-    r.className="rose spin";
-
-    r.style.left=Math.random()*100+"%";
-
-    document.body.appendChild(r);
-    roses.push(r);
-  }
-
-  setTimeout(transformToHeart,1500);
-}
-
-/* ❤️ %100 DOLU KALP */
-function transformToHeart(){
-  let cx = window.innerWidth/2;
-  let cy = window.innerHeight/2;
-
-  let scale = 20;
-  let density = 10;
-
-  let points = [];
-
-  for(let x=-density; x<=density; x+=0.3){
-    for(let y=-density; y<=density; y+=0.3){
-
-      let nx = x / density;
-      let ny = y / density;
-
-      let eq = Math.pow(nx*nx + ny*ny -1,3) - nx*nx*ny*ny*ny;
-
-      if(eq <= 0){
-        points.push({x,y});
-      }
-    }
-  }
-
-  points.sort(()=>Math.random()-0.5);
-
-  roses.forEach((r,i)=>{
-    let p = points[i % points.length];
-
-    let finalX = cx + p.x * scale;
-    let finalY = cy - p.y * scale;
-
-    let dx = cx - finalX;
-    let dy = cy - finalY;
-    let angle = Math.atan2(dy, dx) * (180 / Math.PI);
-
-    r.style.transition="1.5s ease";
-    r.style.left=(finalX - 13)+"px";
-    r.style.top=(finalY - 13)+"px";
-
-    r.classList.remove("spin");
-
-    r.style.transform = `rotate(${angle}deg) scale(1.05)`;
-
-    r.classList.add("pulse");
-  });
+  initCanvas();
+  createHeartParticles();
 
   document.getElementById("loveText").style.opacity="1";
+}
+
+/* CANVAS */
+function initCanvas(){
+  canvas=document.getElementById("heartCanvas");
+  ctx=canvas.getContext("2d");
+
+  canvas.width=window.innerWidth;
+  canvas.height=window.innerHeight;
+}
+
+/* PARÇACIK OLUŞTUR */
+function createHeartParticles(){
+  let cx=canvas.width/2;
+  let cy=canvas.height/2;
+
+  for(let i=0;i<900;i++){
+
+    let t=Math.random()*Math.PI*2;
+    let r=Math.random();
+
+    let x=16*Math.pow(Math.sin(t),3)*r;
+    let y=-(13*Math.cos(t)-5*Math.cos(2*t)-2*Math.cos(3*t)-Math.cos(4*t))*r;
+
+    particles.push({
+      x:cx + x*18,
+      y:cy + y*18,
+      size:Math.random()*3+2,
+      angle:Math.random()*360,
+      speed:Math.random()*0.5
+    });
+  }
+
+  animate();
+}
+
+/* ANİMASYON */
+function animate(){
+  ctx.clearRect(0,0,canvas.width,canvas.height);
+
+  particles.forEach(p=>{
+    p.angle += p.speed;
+
+    let gradient=ctx.createRadialGradient(p.x,p.y,0,p.x,p.y,p.size*3);
+    gradient.addColorStop(0,"#ff4d6d");
+    gradient.addColorStop(1,"rgba(255,0,0,0)");
+
+    ctx.fillStyle=gradient;
+
+    ctx.beginPath();
+    ctx.arc(p.x,p.y,p.size,0,Math.PI*2);
+    ctx.fill();
+  });
+
+  requestAnimationFrame(animate);
 }
 
 /* RESET */
