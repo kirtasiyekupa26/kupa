@@ -126,10 +126,12 @@ transition:0.15s;
 transform:scale(0.95);
 }
 
+/* ❤️ BURASI GÜNCELLENDİ */
 #loveText{
 color:white;
 font-size:28px;
 margin-top:20px;
+margin-bottom:20px; /* 👈 yukarı çekildi */
 opacity:0;
 transition:1.5s;
 z-index:3;
@@ -223,7 +225,6 @@ function showFinal(){
   document.getElementById("loveText").style.opacity="1";
 }
 
-/* 🎉 TETİK */
 function triggerConfetti(e){
   e.stopPropagation();
 
@@ -234,7 +235,6 @@ function triggerConfetti(e){
   createBurstHearts();
 }
 
-/* CANVAS */
 function initCanvas(){
   canvas = document.getElementById("heartCanvas");
   ctx = canvas.getContext("2d");
@@ -243,7 +243,6 @@ function initCanvas(){
   canvas.height = window.innerHeight;
 }
 
-/* 💖 ALT KALPLER (DAHA YOĞUN) */
 function createFloatingHearts(){
   setInterval(()=>{
     floatingHearts.push({
@@ -258,7 +257,6 @@ function createFloatingHearts(){
   animate();
 }
 
-/* 💥 KONSER PATLAMASI */
 function createBurstHearts(){
   let photo = document.getElementById("photo");
   let rect = photo.getBoundingClientRect();
@@ -275,7 +273,6 @@ function createBurstHearts(){
   }
 }
 
-/* ❤️ PARLAK KALP */
 function drawHeart(x,y,size,alpha){
   ctx.save();
   ctx.globalAlpha = alpha;
