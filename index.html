@@ -106,11 +106,12 @@ flex-direction:column;
 z-index:5;
 }
 
+/* 🔥 FOTO ALTTA */
 #photo{
 width:80%;
 max-width:420px;
 border-radius:20px;
-z-index:2;
+z-index:1;
 }
 
 /* YAZI */
@@ -120,17 +121,17 @@ font-size:28px;
 margin-top:20px;
 opacity:0;
 transition:1.5s;
-z-index:2;
+z-index:3;
 }
 
-/* CANVAS */
+/* 🔥 CANVAS ÜSTTE */
 #heartCanvas{
 position:fixed;
 top:0;
 left:0;
 width:100%;
 height:100%;
-z-index:1;
+z-index:2;
 pointer-events:none;
 }
 
@@ -219,29 +220,36 @@ function initCanvas(){
   canvas.height = window.innerHeight;
 }
 
-/* ❤️ ANA KALP */
+/* ❤️ NET DOLU KALP */
 function createHeartShape(){
   let cx = canvas.width/2;
   let cy = canvas.height/2;
 
-  for(let i=0;i<1200;i++){
-    let t = Math.random()*Math.PI*2;
-    let r = Math.random();
+  let scale = 16;
+  let density = 10;
 
-    let x = 16*Math.pow(Math.sin(t),3) * r;
-    let y = -(13*Math.cos(t)-5*Math.cos(2*t)-2*Math.cos(3*t)-Math.cos(4*t)) * r;
+  for(let x=-density; x<=density; x+=0.25){
+    for(let y=-density; y<=density; y+=0.25){
 
-    particles.push({
-      x: cx + x*18,
-      y: cy + y*18,
-      size: Math.random()*3+1
-    });
+      let nx = x/density;
+      let ny = y/density;
+
+      let eq = Math.pow(nx*nx + ny*ny -1,3) - nx*nx*ny*ny*ny;
+
+      if(eq <= 0){
+        particles.push({
+          x: cx + x*scale,
+          y: cy - y*scale,
+          size: 2
+        });
+      }
+    }
   }
 
   animate();
 }
 
-/* 💖 ALTTAN YÜKSELEN KALPLER */
+/* 💖 ALTTAN YÜKSELEN */
 function createFloatingHearts(){
   setInterval(()=>{
     floatingHearts.push({
@@ -254,7 +262,6 @@ function createFloatingHearts(){
   },200);
 }
 
-/* ÇİZİM */
 function drawHeart(x,y,size,alpha){
   ctx.save();
   ctx.globalAlpha = alpha;
@@ -273,27 +280,19 @@ function drawHeart(x,y,size,alpha){
   ctx.restore();
 }
 
-/* ANİMASYON */
 function animate(){
   ctx.clearRect(0,0,canvas.width,canvas.height);
 
-  // ana kalp
   particles.forEach(p=>{
-    let g = ctx.createRadialGradient(p.x,p.y,0,p.x,p.y,p.size*3);
-    g.addColorStop(0,"#ff4d6d");
-    g.addColorStop(1,"rgba(255,0,0,0)");
-
-    ctx.fillStyle=g;
+    ctx.fillStyle="#ff4d6d";
     ctx.beginPath();
     ctx.arc(p.x,p.y,p.size,0,Math.PI*2);
     ctx.fill();
   });
 
-  // yükselen kalpler
   floatingHearts.forEach(h=>{
     h.y -= h.speed;
     h.alpha -= 0.003;
-
     drawHeart(h.x,h.y,h.size,h.alpha);
   });
 
@@ -302,7 +301,6 @@ function animate(){
   requestAnimationFrame(animate);
 }
 
-/* RESET */
 function restart(){
   location.reload();
 }
