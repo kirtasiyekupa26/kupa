@@ -124,12 +124,13 @@ transition:1.5s;
 /* GÜL */
 .rose{
 position:absolute;
-width:25px;
+width:26px;
 top:100vh;
 transition:1s linear;
+filter: drop-shadow(0 0 6px rgba(255,0,0,0.6));
 }
 
-/* DÖNME EFEKTİ */
+/* DÖNME */
 .spin{
 animation:spin 2s linear infinite;
 }
@@ -139,7 +140,7 @@ from{transform:rotate(0deg);}
 to{transform:rotate(360deg);}
 }
 
-/* KALP NABIZ */
+/* NABIZ */
 .pulse{
 animation:pulse 1s ease-in-out infinite;
 }
@@ -221,10 +222,11 @@ function showFinal(){
 
 /* GÜLLER */
 function createRoses(){
-  for(let i=0;i<45;i++){
+  for(let i=0;i<220;i++){ // 🔥 daha fazla = dolu kalp
     let r=document.createElement("img");
     r.src="rose.png";
     r.className="rose spin";
+
     r.style.left=Math.random()*100+"%";
 
     document.body.appendChild(r);
@@ -234,26 +236,37 @@ function createRoses(){
   setTimeout(transformToHeart,1500);
 }
 
-/* KALP */
+/* 💖 DOLU KALP ALGORİTMASI */
 function transformToHeart(){
   let cx=window.innerWidth/2;
   let cy=window.innerHeight/2;
 
   roses.forEach((r,i)=>{
-    let t = i * 0.2;
+    // 🔥 rastgele ama kalp içinde
+    let t = Math.random() * Math.PI * 2;
+    let scale = Math.random(); // iç doluluk
 
-    let x=16*Math.pow(Math.sin(t),3);
-    let y=-(13*Math.cos(t)-5*Math.cos(2*t)-2*Math.cos(3*t)-Math.cos(4*t));
+    let x=16*Math.pow(Math.sin(t),3) * scale;
+    let y=-(13*Math.cos(t)-5*Math.cos(2*t)-2*Math.cos(3*t)-Math.cos(4*t)) * scale;
+
+    let finalX = cx + x*14;
+    let finalY = cy + y*14;
+
+    let dx = cx - finalX;
+    let dy = cy - finalY;
+    let angle = Math.atan2(dy, dx) * (180 / Math.PI);
 
     r.style.transition="1.5s ease";
-    r.style.left=(cx + x*12 -10)+"px";
-    r.style.top=(cy + y*12 -10)+"px";
+    r.style.left=(finalX - 13)+"px";
+    r.style.top=(finalY - 13)+"px";
 
     r.classList.remove("spin");
+
+    r.style.transform = `rotate(${angle}deg) scale(1.1)`;
+
     r.classList.add("pulse");
   });
 
-  // yazı göster
   document.getElementById("loveText").style.opacity="1";
 }
 
