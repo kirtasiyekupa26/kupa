@@ -107,6 +107,33 @@ border-radius:20px;
 z-index:1;
 }
 
+/* 🎉 CONFETTI ALANI */
+#confettiBox{
+margin-top:15px;
+position:relative;
+display:flex;
+flex-direction:column;
+align-items:center;
+}
+
+#confettiImg{
+width:120px;
+cursor:pointer;
+}
+
+#confettiBtn{
+position:absolute;
+top:50%;
+left:50%;
+transform:translate(-50%,-50%);
+background:rgba(0,0,0,0.6);
+color:white;
+padding:6px 12px;
+border-radius:10px;
+font-size:12px;
+cursor:pointer;
+}
+
 #loveText{
 color:white;
 font-size:28px;
@@ -145,7 +172,15 @@ pointer-events:none;
 
 <div id="final">
   <canvas id="heartCanvas"></canvas>
+
   <img id="photo" src="image.jpg">
+
+  <!-- 🎉 EKLENEN CONFETTI -->
+  <div id="confettiBox">
+    <img id="confettiImg" src="confetti.png">
+    <div id="confettiBtn" onclick="triggerConfetti(event)">TAP 💖</div>
+  </div>
+
   <div id="loveText">Seni Seviyorum ❤️</div>
 </div>
 
@@ -155,6 +190,7 @@ pointer-events:none;
 
 let canvas, ctx;
 let floatingHearts = [];
+let burstHearts = [];
 
 function start(){
   event.stopPropagation();
@@ -191,12 +227,21 @@ function showFinal(){
   document.getElementById("stage").style.display="none";
   document.getElementById("final").style.display="flex";
 
-  document.getElementById("confetti").play();
-
   initCanvas();
-  createFloatingHearts(); // sadece bu kaldı
+  createFloatingHearts();
 
   document.getElementById("loveText").style.opacity="1";
+}
+
+/* 🎉 BUTON TETİK */
+function triggerConfetti(e){
+  e.stopPropagation();
+
+  let audio = document.getElementById("confetti");
+  audio.currentTime = 0;
+  audio.play();
+
+  createBurstHearts();
 }
 
 /* CANVAS */
@@ -208,7 +253,7 @@ function initCanvas(){
   canvas.height = window.innerHeight;
 }
 
-/* 💖 SADECE YÜZEN KALPLER */
+/* ALT KALPLER */
 function createFloatingHearts(){
   setInterval(()=>{
     floatingHearts.push({
@@ -221,6 +266,23 @@ function createFloatingHearts(){
   },200);
 
   animate();
+}
+
+/* 💥 FOTO ÜZERİ PATLAMA */
+function createBurstHearts(){
+  let photo = document.getElementById("photo");
+  let rect = photo.getBoundingClientRect();
+
+  for(let i=0;i<25;i++){
+    burstHearts.push({
+      x: rect.left + rect.width/2,
+      y: rect.top + rect.height/2,
+      vx: (Math.random()-0.5)*6,
+      vy: (Math.random()-0.5)*6,
+      size: Math.random()*8+5,
+      alpha:1
+    });
+  }
 }
 
 function drawHeart(x,y,size,alpha){
@@ -250,7 +312,15 @@ function animate(){
     drawHeart(h.x,h.y,h.size,h.alpha);
   });
 
+  burstHearts.forEach(h=>{
+    h.x += h.vx;
+    h.y += h.vy;
+    h.alpha -= 0.02;
+    drawHeart(h.x,h.y,h.size,h.alpha);
+  });
+
   floatingHearts = floatingHearts.filter(h=>h.alpha>0);
+  burstHearts = burstHearts.filter(h=>h.alpha>0);
 
   requestAnimationFrame(animate);
 }
