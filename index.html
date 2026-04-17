@@ -122,7 +122,6 @@ filter:drop-shadow(0 0 10px rgba(255,255,255,0.5));
 transition:0.15s;
 }
 
-/* 💥 BASINCA KÜÇÜLME */
 #confettiImg:active{
 transform:scale(0.95);
 }
@@ -168,7 +167,6 @@ pointer-events:none;
 
   <img id="photo" src="image.jpg">
 
-  <!-- 🎉 SADECE GÖRSEL -->
   <div id="confettiBox">
     <img id="confettiImg" src="confetti.png" onclick="triggerConfetti(event)">
   </div>
@@ -245,43 +243,47 @@ function initCanvas(){
   canvas.height = window.innerHeight;
 }
 
-/* ALT KALPLER */
+/* 💖 ALT KALPLER (DAHA YOĞUN) */
 function createFloatingHearts(){
   setInterval(()=>{
     floatingHearts.push({
       x: Math.random()*canvas.width,
       y: canvas.height + 20,
-      size: Math.random()*6+4,
-      speed: Math.random()*1+0.5,
+      size: Math.random()*10+8,
+      speed: Math.random()*2+1,
       alpha: 1
     });
-  },200);
+  },120);
 
   animate();
 }
 
-/* 💥 PATLAMA */
+/* 💥 KONSER PATLAMASI */
 function createBurstHearts(){
   let photo = document.getElementById("photo");
   let rect = photo.getBoundingClientRect();
 
-  for(let i=0;i<25;i++){
+  for(let i=0;i<60;i++){
     burstHearts.push({
       x: rect.left + rect.width/2,
       y: rect.top + rect.height/2,
-      vx: (Math.random()-0.5)*6,
-      vy: (Math.random()-0.5)*6,
-      size: Math.random()*8+5,
+      vx: (Math.random()-0.5)*10,
+      vy: (Math.random()-0.5)*10,
+      size: Math.random()*12+10,
       alpha:1
     });
   }
 }
 
+/* ❤️ PARLAK KALP */
 function drawHeart(x,y,size,alpha){
   ctx.save();
   ctx.globalAlpha = alpha;
   ctx.translate(x,y);
   ctx.scale(size/10,size/10);
+
+  ctx.shadowBlur = 15;
+  ctx.shadowColor = "#ff4d6d";
 
   ctx.beginPath();
   ctx.moveTo(0,0);
@@ -289,7 +291,7 @@ function drawHeart(x,y,size,alpha){
   ctx.bezierCurveTo(-5,3,0,5,0,7);
   ctx.bezierCurveTo(0,5,5,3,5,0);
   ctx.bezierCurveTo(5,-3,0,-3,0,0);
-  ctx.fillStyle="#ff4d6d";
+  ctx.fillStyle="#ff2d55";
   ctx.fill();
 
   ctx.restore();
@@ -300,14 +302,14 @@ function animate(){
 
   floatingHearts.forEach(h=>{
     h.y -= h.speed;
-    h.alpha -= 0.003;
+    h.alpha -= 0.002;
     drawHeart(h.x,h.y,h.size,h.alpha);
   });
 
   burstHearts.forEach(h=>{
     h.x += h.vx;
     h.y += h.vy;
-    h.alpha -= 0.02;
+    h.alpha -= 0.015;
     drawHeart(h.x,h.y,h.size,h.alpha);
   });
 
