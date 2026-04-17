@@ -66,7 +66,7 @@ z-index:10;
 .openLeft{transform:translateX(-100%);}
 .openRight{transform:translateX(100%);}
 
-/* COUNTDOWN VIDEO */
+/* COUNTDOWN */
 #countdown{
 position:absolute;
 width:100%;
@@ -112,33 +112,48 @@ max-width:420px;
 border-radius:20px;
 }
 
+/* YAZI */
+#loveText{
+color:white;
+font-size:28px;
+margin-top:20px;
+opacity:0;
+transition:1.5s;
+}
+
 /* GÜL */
 .rose{
 position:absolute;
 width:25px;
-animation:rise 4s linear forwards;
+top:100vh;
+transition:1s linear;
 }
 
-@keyframes rise{
-0%{transform:translateY(100vh);opacity:1}
-100%{transform:translateY(-10vh);opacity:0}
+/* DÖNME EFEKTİ */
+.spin{
+animation:spin 2s linear infinite;
 }
 
-/* KALP FORMU */
-.heartRose{
-position:absolute;
-width:22px;
-animation:fade 1s ease forwards;
-opacity:0;
+@keyframes spin{
+from{transform:rotate(0deg);}
+to{transform:rotate(360deg);}
 }
 
-@keyframes fade{
-to{opacity:1}
+/* KALP NABIZ */
+.pulse{
+animation:pulse 1s ease-in-out infinite;
 }
+
+@keyframes pulse{
+0%{transform:scale(1);}
+50%{transform:scale(1.15);}
+100%{transform:scale(1);}
+}
+
 </style>
 </head>
 
-<body>
+<body onclick="restart()">
 
 <div id="stage">
   <div id="playBtn" onclick="start()"></div>
@@ -155,13 +170,17 @@ to{opacity:1}
 
 <div id="final">
   <img id="photo" src="image.jpg">
+  <div id="loveText">Seni Seviyorum ❤️</div>
 </div>
 
 <audio id="confetti" src="confetti.mp3"></audio>
 
 <script>
 
+let roses=[];
+
 function start(){
+  event.stopPropagation();
   document.getElementById("playBtn").style.display="none";
 
   document.getElementById("leftCurtain").classList.add("openLeft");
@@ -170,7 +189,6 @@ function start(){
   setTimeout(playCountdown,2200);
 }
 
-/* COUNTDOWN */
 function playCountdown(){
   let c=document.getElementById("countdown");
   let v=document.getElementById("countVideo");
@@ -181,7 +199,6 @@ function playCountdown(){
   v.onended=flash;
 }
 
-/* FLASH */
 function flash(){
   let f=document.getElementById("flash");
 
@@ -193,7 +210,6 @@ function flash(){
   },300);
 }
 
-/* FINAL */
 function showFinal(){
   document.getElementById("stage").style.display="none";
   document.getElementById("final").style.display="flex";
@@ -201,38 +217,49 @@ function showFinal(){
   document.getElementById("confetti").play();
 
   createRoses();
-  setTimeout(createHeart,1500);
 }
 
-/* GÜL YAĞMURU */
+/* GÜLLER */
 function createRoses(){
   for(let i=0;i<45;i++){
     let r=document.createElement("img");
     r.src="rose.png";
-    r.className="rose";
+    r.className="rose spin";
     r.style.left=Math.random()*100+"%";
+
     document.body.appendChild(r);
+    roses.push(r);
   }
+
+  setTimeout(transformToHeart,1500);
 }
 
-/* KALP ŞEKLİ */
-function createHeart(){
+/* KALP */
+function transformToHeart(){
   let cx=window.innerWidth/2;
   let cy=window.innerHeight/2;
 
-  for(let t=0;t<Math.PI*2;t+=0.2){
+  roses.forEach((r,i)=>{
+    let t = i * 0.2;
+
     let x=16*Math.pow(Math.sin(t),3);
     let y=-(13*Math.cos(t)-5*Math.cos(2*t)-2*Math.cos(3*t)-Math.cos(4*t));
 
-    let r=document.createElement("img");
-    r.src="rose.png";
-    r.className="heartRose";
+    r.style.transition="1.5s ease";
+    r.style.left=(cx + x*12 -10)+"px";
+    r.style.top=(cy + y*12 -10)+"px";
 
-    r.style.left=(cx + x*10 -10)+"px";
-    r.style.top=(cy + y*10 -10)+"px";
+    r.classList.remove("spin");
+    r.classList.add("pulse");
+  });
 
-    document.body.appendChild(r);
-  }
+  // yazı göster
+  document.getElementById("loveText").style.opacity="1";
+}
+
+/* RESET */
+function restart(){
+  location.reload();
 }
 
 </script>
